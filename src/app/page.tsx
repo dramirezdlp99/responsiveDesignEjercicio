@@ -27,10 +27,14 @@ interface HomeState {
 
 // ===============================================
 // 2. COMPONENTES DE CLASE (POO)
+// 
+// Corrección de error de compilación: Usamos Record<string, never> para indicar 
+// que un componente de clase no tiene props (reemplaza {}).
 // ===============================================
 
 // Componente de Clase para el Logo
-class Logo extends Component<{}> {
+// Uso de Record<string, never> para cumplir con el linter de TS/ESLint
+class Logo extends Component<Record<string, never>> { 
   render() {
     return (
       // Se adapta al tema
@@ -66,12 +70,11 @@ class ProfileCircle extends Component<ProfileCircleProps> {
   render() {
     const { name, size = 10, isBordered = true } = this.props;
     
-    // Mapeo de tamaño para clases de Tailwind conocidas
+    // Mapeo de tamaño para clases de Tailwind conocidas (solución del error anterior)
     const sizeMap: { [key: number]: string } = {
       10: 'w-10 h-10', // Default
       6: 'w-6 h-6',    // Usado en la sección de amigos
-      12: 'w-12 h-12',  // Si se necesitara un tamaño más grande
-      // Asegúrate de que cualquier otro 'size' numérico que uses aquí tenga un mapeo
+      // Se pueden agregar más tamaños si son usados
     };
 
     const sizeClasses = sizeMap[size] || 'w-10 h-10'; // Usa el valor mapeado o el default 10
@@ -79,6 +82,7 @@ class ProfileCircle extends Component<ProfileCircleProps> {
     return (
       <div className={`flex-shrink-0 ${sizeClasses} relative`}>
         {/* La extensión (.png o .jpg) debe coincidir con el archivo guardado en /public */}
+        {/* Se usa <img> y se ignora el warning de Next.js, que no detiene el build, pero la regla de TS sí lo hacía. */}
         <img
           src={`/${name}`}
           alt={name}
@@ -100,9 +104,11 @@ class ProfileCircle extends Component<ProfileCircleProps> {
 }
 
 // Componente de Clase principal: Home
-export default class Home extends Component<{}, HomeState> {
+// Uso de Record<string, never> para cumplir con el linter de TS/ESLint
+export default class Home extends Component<Record<string, never>, HomeState> {
   
-  constructor(props: {}) {
+  // El constructor ahora recibe Record<string, never> en lugar de {}
+  constructor(props: Record<string, never>) {
     super(props);
     this.state = {
       theme: 'dark', // Iniciamos en tema oscuro por defecto según la imagen
@@ -141,7 +147,7 @@ export default class Home extends Component<{}, HomeState> {
   }
 
   // Se ejecuta al actualizar el componente (para cambiar el tema)
-  componentDidUpdate(_: {}, prevState: Readonly<HomeState>) {
+  componentDidUpdate(_: Record<string, never>, prevState: Readonly<HomeState>) {
     if (this.state.isClient && prevState.theme !== this.state.theme) {
       this.applyTheme(this.state.theme); // Aplica el nuevo tema al <html>
     }
