@@ -65,9 +65,19 @@ class MenuItem extends Component<MenuItemProps> {
 class ProfileCircle extends Component<ProfileCircleProps> {
   render() {
     const { name, size = 10, isBordered = true } = this.props;
+    
+    // Mapeo de tamaño para clases de Tailwind conocidas
+    const sizeMap: { [key: number]: string } = {
+      10: 'w-10 h-10', // Default
+      6: 'w-6 h-6',    // Usado en la sección de amigos
+      12: 'w-12 h-12',  // Si se necesitara un tamaño más grande
+      // Asegúrate de que cualquier otro 'size' numérico que uses aquí tenga un mapeo
+    };
 
+    const sizeClasses = sizeMap[size] || 'w-10 h-10'; // Usa el valor mapeado o el default 10
+    
     return (
-      <div className={`flex-shrink-0 w-${size} h-${size} relative`}>
+      <div className={`flex-shrink-0 ${sizeClasses} relative`}>
         {/* La extensión (.png o .jpg) debe coincidir con el archivo guardado en /public */}
         <img
           src={`/${name}`}
